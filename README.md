@@ -5,11 +5,17 @@ zstack-ansible provides a alternative solution except ZStack All-in-one bash scr
 ```
 
 # OS Support
-- Debian 8.x
+
+|OS|type|
+| --- |---|
+| Debian 8.x | support |
+| CentOS     | not yet |
+| Ubuntu     | not yet |
+| Fedora     | not yet |
 
 > zstack-ansible just support Debian 8.x at present.
 
-> Ps. 由于ZStack官方的安装部署脚本已经完美支持Centos 7.2+，而对于其他常用的开源系统，比如Debian，并没有太多支持，所有zstack-ansible会先从我本人所用的Debian系统进行ZStack的整合和移植工作.
+> Ps. 由于ZStack官方的安装部署脚本已经完美支持Centos 7.2+，而对于其他常用的开源系统，比如Debian，并没有太多支持，zstack-ansible项目将会先从我本人所用的Debian系统进行ZStack的整合和移植工作. 其他操作系统诸如 Centos/Fedora/Ubuntu 将会陆续进行开放出来.
 
 # Zstack version
 #### zstack-ansible based on zstack 1.6.2 version.
