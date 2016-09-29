@@ -1,7 +1,8 @@
 # zstack-ansible
+```
 zstack-ansible is a ZStack automation deployment project based on Ansible.
-
 zstack-ansible provides a alternative solution except ZStack All-in-one bash script.
+```
 
 # OS Support
 - Debian 8.x
@@ -17,8 +18,10 @@ zstack-ansible provides a alternative solution except ZStack All-in-one bash scr
 参考项目文件 usage.md
 
 # Why zstack-ansible
+```
 1. ZStack官方仅提供All-in-one脚本部署，没有采用其他运维自动化工具的支持，诸如：ansible/Puppet etc.
 2. ZStack打包好的一键部署方案，固然很好，但是其包装的过于厉害，导致很多有兴趣了解其软件架构的同学，无法知道ZStack到底用到了哪些开源软件，然后如何通过ZStack核心代码进行整合关联. 而zstack-ansible将会把ZStack用到的开源软件一一展示出来，让研究学习的同学能够清楚知道，哪些是开源组件，哪些是Zstack官方开发的代码和模块.
+```
 
 # What is ZStack
 > ZStack is open source IaaS(infrastructure as a service) software aiming to automate datacenters, managing resources of compute, storage, and networking all by APIs. Users can setup ZStack environments in a download-and-run manner, spending 5 minutes building a POC environment all on a single Linux machine, or 30 minutes building a multi-node production environment that can scale to hundreds of thousands of physical servers.
