@@ -2,4 +2,3 @@ misc/*
 roles/template
 roles/zk_start/files/zstack-image-1.4.qcow2
 roles/zk_start/files/zstack-virtualrouter-1.1.0.qcow2
-zk_start
