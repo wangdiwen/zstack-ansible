@@ -1,0 +1,12 @@
+---
+zstack_mysql_host: localhost
+zstack_mysql_root_pwd: netease
+zstack_mysql_zstack_pwd: netease
+zstack_rabbitmq_host: localhost
+zstack_rabbitmq_user: zstack
+zstack_rabbitmq_pwd: netease
+zstack_rabbitmq_tags: administrator
+zstack_rabbitmq_priv_vhost: "/"
+zstack_rabbitmq_config_priv: ".*"
+zstack_rabbitmq_read_priv: ".*"
+zstack_rabbitmq_write_priv: ".*"

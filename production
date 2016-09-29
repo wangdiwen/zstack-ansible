@@ -1,0 +1,6 @@
+### all hosts
+
+[all]
+
+# your servers
+zk-server ansible_host=192.168.124.19 ansible_port=32200 ansible_user=diwen

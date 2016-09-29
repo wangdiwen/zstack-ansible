@@ -1,0 +1,7 @@
+---
+zstack_basedir: /usr/local/zstack
+zstack_tomcatdir: "{{ zstack_basedir }}/apache-tomcat"
+zstack_wardir: "{{ zstack_tomcatdir }}/webapps/zstack"
+zstack_install_sh_script: "{{ zstack_wardir }}/WEB-INF/classes/tools/install.sh"
+zstack_user: zstack
+zstack_licensedir: /var/lib/zstack

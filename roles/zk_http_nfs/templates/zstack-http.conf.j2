@@ -1,0 +1,9 @@
+# {{ ansible_managed }}
+
+Alias /image "{{ zstack_http_dir }}/"
+<Directory {{ zstack_http_dir }}/>
+  Options Indexes FollowSymLinks
+  AllowOverride FileInfo AuthConfig Limit
+  Options MultiViews Indexes SymLinksIfOwnerMatch IncludesNoExec
+  Allow from all
+</Directory>

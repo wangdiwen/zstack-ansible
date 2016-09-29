@@ -1,0 +1,5 @@
+---
+zstack_http_user: www-data
+zstack_http_dir: /var/www/html/http_root
+zstack_nfs_user: zstack
+zstack_nfs_dir: /var/www/html/nfs_root

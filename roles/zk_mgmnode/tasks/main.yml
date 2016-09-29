@@ -1,0 +1,208 @@
+---
+- name: install virtual software
+  apt: name={{ item }} state=present
+  with_items:
+    - qemu-kvm
+    - libvirt-bin
+    - libvirt-daemon
+    # - libvirtd
+    - virtinst
+
+# - name: upgrade the python cffi
+#   command: pip install cffi --upgrade
+#
+# - name: upgrade the python cryptography
+#   command: pip install cryptography --upgrade
+
+- name: install ansible
+  pip: name=ansible state=forcereinstall
+
+# --------- continue -----------
+- name: install java-8
+  apt: name=openjdk-8-jdk state=present
+
+- name: set java-7 as default jre
+  command: "{{ item }}"
+  with_items:
+    - "/usr/bin/update-alternatives --install /usr/bin/java java /usr/lib/jvm/java-1.8.0-openjdk-amd64/bin/java 0"
+    - "/usr/bin/update-alternatives --set java /usr/lib/jvm/java-1.8.0-openjdk-amd64/bin/java"
+
+- name: create zstack basedir
+  file: path={{ zstack_basedir }} state=directory mode=0755
+
+- name: install tomcat
+  unarchive: src=apache-tomcat-7.0.35.tar.gz dest={{ zstack_basedir }}
+
+- name: rename tomcat dir
+  command: mv {{ zstack_basedir }}/apache-tomcat-7.0.35 {{ zstack_tomcatdir }}
+
+- name: create zstack wardir
+  file: path={{ zstack_wardir }} state=directory mode=0755
+
+- name: install zstack war
+  unarchive: src=zstack-1.6.2.war.zip dest={{ zstack_wardir }}
+
+- name: change exec mode of install script
+  file: path={{ zstack_install_sh_script }} mode=755
+
+- name: install zstack-ctl
+  shell: "{{ zstack_install_sh_script }} zstack-ctl >> /tmp/install.log 2>&1"
+  args:
+    executable: /bin/bash
+  become: yes
+
+- name: install zstack command line tool
+  shell: "{{ zstack_install_sh_script }} zstack-cli >> /tmp/install.log 2>&1"
+  args:
+    executable: /bin/bash
+  become: yes
+
+- name: install zstack webui
+  shell: "{{ zstack_install_sh_script }} zstack-dashboard >> /tmp/install.log 2>&1"
+  args:
+    executable: /bin/bash
+  become: yes
+
+# - name: del zstack user
+#   user: name={{ zstack_user }} state=absent remove=yes
+
+- name: create zstack user
+  user: name={{ zstack_user }} shell=/bin/bash home={{ zstack_basedir }} groups=sudo append=yes
+
+- name: change zstack user home mode
+  file: path={{ zstack_basedir }} owner={{ zstack_user }} group={{ zstack_user }} state=directory recurse=yes
+
+- name: create license dir
+  file: path={{ zstack_licensedir }}/license state=directory  recurse=yes
+
+- name: set license dir owner
+  file: path={{ zstack_licensedir }} mode=0755 owner={{ zstack_user }} group={{ zstack_user }} recurse=yes
+
+- name: install license
+  command: "zstack-ctl install_license --license {{ zstack_tomcatdir }}/LICENSE >> /tmp/install.log 2>&1"
+
+- name: enable root user nopasswd
+  lineinfile: dest=/etc/sudoers state=present regexp='^root' line='root ALL=(ALL:ALL) NOPASSWD:ALL' validate='visudo -cf %s' backup=yes
+
+- name: add zstack user to nopasswd
+  lineinfile: dest=/etc/sudoers state=present insertafter=EOF line='zstack ALL=(ALL:ALL) NOPASSWD:ALL' validate='visudo -cf %s' backup=yes
+
+- name: check zstack status
+  command: zstack-ctl status
+
+- name: set ZSTACK_HOME env
+  command: zstack-ctl setenv ZSTACK_HOME={{ zstack_wardir }}
+
+# ----------------------------------------------------------------------------
+# Below task is for install some zstack systemd service
+
+- name: create zstack-server start script
+  template:
+    src=zstack-server.j2
+    dest=/etc/init.d/zstack-server
+    owner=root
+    group=root
+    mode=755
+    backup=yes
+
+- name: create zstack service
+  copy:
+    src=zstack.service
+    dest=/etc/systemd/system/zstack.service
+    owner=root
+    group=root
+    mode=644
+    backup=yes
+
+- name: enable the zstack service
+  service: name=zstack enabled=yes
+
+- name: create zstack kvmagent script
+  copy:
+    src=zstack-kvmagent
+    dest=/usr/bin/zstack-kvmagent
+    owner=root
+    group=root
+    mode=755
+    backup=yes
+
+- name: create zstack kvmagent service
+  copy:
+    src=zstack-kvmagent.service
+    dest=/etc/systemd/system/zstack-kvmagent.service
+    owner=root
+    group=root
+    mode=755
+    backup=yes
+
+- name: enable zstack kvmagent service
+  service: name=zstack-kvmagent enabled=yes
+
+- name: create zstack sftpbackupstorage script
+  copy:
+    src=zstack-sftpbackupstorage
+    dest=/usr/bin/zstack-sftpbackupstorage
+    owner=root
+    group=root
+    mode=755
+    backup=yes
+
+- name: create zstack sftpbackupstorage service
+  copy:
+    src=zstack-sftpbackupstorage.service
+    dest=/etc/systemd/system/zstack-sftpbackupstorage.service
+    owner=root
+    group=root
+    mode=755
+    backup=yes
+
+- name: enable zstack sftpbackupstorage service
+  service: name=zstack-sftpbackupstorage enabled=yes
+
+- name: create zstack consoleproxy script
+  copy:
+    src=zstack-consoleproxy
+    dest=/usr/bin/zstack-consoleproxy
+    owner=root
+    group=root
+    mode=755
+    backup=yes
+
+- name: create zstack consoleproxy service
+  copy:
+    src=zstack-consoleproxy.service
+    dest=/etc/systemd/system/zstack-consoleproxy.service
+    owner=root
+    group=root
+    mode=755
+    backup=yes
+
+- name: enable zstack consoleproxy service
+  service: name=zstack-consoleproxy enabled=yes
+
+# ----------------------------------------------------------------------------
+
+- name: configure tomcat java option
+  copy:
+    src=tomcat-setenv.sh
+    dest={{ zstack_tomcatdir }}/bin/setenv.sh
+    owner=root
+    group=root
+    mode=755
+    backup=yes
+
+- name: deploy database
+  command: "zstack-ctl deploydb --host={{ zstack_mysql_host }} --root-password={{ zstack_mysql_root_pwd }} --zstack-password={{ zstack_mysql_zstack_pwd }} >> /tmp/install.log 2>&1"
+
+- name: config zstack properties for rabbitmq
+  command: "{{ item }}"
+  with_items:
+    - "zstack-ctl configure  CloudBus.rabbitmqUsername={{ zstack_rabbitmq_user }}"
+    - "zstack-ctl configure  CloudBus.rabbitmqPassword={{ zstack_rabbitmq_pwd }}"
+
+
+- name: restart the libvirtd
+  service: name=libvirtd state=restarted enabled=yes
+
+- name: management node installed
+  debug: msg="zstack management node installed successfully"

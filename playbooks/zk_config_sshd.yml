@@ -1,0 +1,29 @@
+---
+  # Notice:
+  #   open remote sshd and permit root user to login
+  #
+  #   tips:
+  #   compute node must be permit to root remote connnect when we add a host
+  #   modify the sshd configure file '/etc/ssh/sshd_config', 'PermitRootLogin no' -> 'PermitRootLogin yes'
+  #   and add the root password, passwd root
+
+  # Usage:
+  # ansible-playbook -vv playbooks/zk_config_sshd.yml -c paramiko --extra-vars 'host=zk-server ansible_port=<ssh-old-port>'
+
+  - name: deploy zstack POC env
+    remote_user: "{{ ansible_user }}"
+    gather_facts: yes
+    hosts:
+      - "{{ host }}"
+    become: yes
+    become_user: root
+    become_method: sudo
+    vars:
+      # set your server sshd port
+      ssh_port: 22
+      # make password can use: mkpasswd --method=sha-512 --stdin <your password chars>
+      # below is 'netease'
+      ssh_root_pwd: '$6$gOHzRrk4E8zefram$.HfXx2FWKsgV1utqFnVPXE.4PaD/S1aqI3x2OJfJl2mt8iRFV.3BWVIj5PXGM6ZPNfFVVn0kFPBlqYUJnEyOf/'
+
+    roles:
+      - config_sshd

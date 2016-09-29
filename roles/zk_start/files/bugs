@@ -1,0 +1,30 @@
+
+1. zstack添加host，在UI界面使用非22端口，失败
+解决方式：
+  使用zstack-cli工具，手工操作
+  example:
+    LogInByAccount accountName=admin password=password
+    AddSftpBackupStorage hostname=192.168.124.19 name=backup-19 password=netease sshPort=32200 username=root url=/backup_root
+
+2. 无法启动vm实例
+错误信息如下：
+"details": "failed to execute bash[ip netns set br_eth0_6701732ea75649509f8d590c5f1d2ba9 0], return code: 255, stdout: , stderr: Command \"set\" is unknown, try \"ip netns help\".\n"
+解决方式：
+  debian8自带/usr/bin/ip工具版本太低，所属apt包为iproute2,需要升级到4.6（测试版）
+  http://ftp.hk.debian.org/debian/pool/main/i/iproute2/iproute2_4.6.0-4_amd64.deb
+
+3. 无法启动vm实例
+错误信息：
+"failed to execute bash[ip netns set br_eth0_6701732ea75649509f8d590c5f1d2ba9 0], return code: 2, stdout: , stderr: RTNETLINK answers: Operation not supported\n"
+解决方式：
+  目前看来，不是ip工具版本过低导致这个问题，可能是kernel版本过低了，
+  升级kernel版本
+  sources.list添加debian源，
+    deb http://http.debian.net/debian jessie-backports main
+    deb-src http://http.debian.net/debian jessie-backports main
+  sudo apt-get update
+  sudo apt-cache search linux-image
+  sudo apt-get install -t jessie-backports linux-image-4.6.0-1-grsec-amd64
+  sudo apt-get clean
+  sudo reboot
+  -- 貌似debian8.5系统升级内核后，无法进入HP的刀片了？

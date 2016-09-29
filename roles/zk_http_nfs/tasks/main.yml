@@ -1,0 +1,43 @@
+---
+- name: install nfs and apache2
+  apt: name={{ item }} state=present
+  with_items:
+    - nfs-common
+    - nfs-kernel-server
+    - apache2
+
+- name: create http root dir
+  file: path={{ zstack_http_dir }} owner={{ zstack_http_user }} group={{ zstack_http_user }} state=directory mode=777 recurse=yes
+
+- name: delete apache2 default conf
+  file: path=/etc/apache2/sites-enabled/000-default.conf state=absent
+
+- name: create http conf file
+  template:
+    src=zstack-http.conf.j2
+    dest=/etc/apache2/conf-available/zstack-http.conf
+    owner=root
+    group=root
+    mode=644
+    backup=no
+
+- name: enable http conf file
+  file: src=/etc/apache2/conf-available/zstack-http.conf dest=/etc/apache2/conf-enabled/zstack-http.conf state=link
+
+- name: restart apache2
+  service: name=apache2 state=restarted enabled=yes
+
+- name: create nfs dir
+  file: path={{ zstack_nfs_dir }} owner={{ zstack_nfs_user }} group={{ zstack_nfs_user }} state=directory mode=777 recurse=yes
+
+- name: configure nfs
+  template:
+    src=zstack-nfs.conf.j2
+    dest=/etc/exports
+    owner=root
+    group=root
+    mode=644
+    backup=yes
+
+- name: restart nfs server
+  service: name=nfs-kernel-server state=restarted enabled=yes

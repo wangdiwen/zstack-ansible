@@ -1,0 +1,4 @@
+# netease dns
+# nameserver 192.168.130.33
+# nameserver 192.168.130.31
+nameserver 192.168.124.1

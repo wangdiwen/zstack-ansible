@@ -1,0 +1,16 @@
+---
+
+- name: add root login of sshd
+  lineinfile: dest=/etc/ssh/sshd_config state=present regexp='^PermitRootLogin' line='PermitRootLogin yes' backup=yes
+- name: open password auth
+  lineinfile: dest=/etc/ssh/sshd_config state=present regexp='^PasswordAuthentication' line='PasswordAuthentication yes' backup=yes
+- name: changed sshd port
+  lineinfile: dest=/etc/ssh/sshd_config state=present regexp='^Port' line="Port {{ ssh_port }}" backup=yes
+
+- name: add root passwd
+  vars:
+    passwd: "{{ ssh_root_pwd }}"
+  user: name=root password={{ passwd }} state=present update_password=always
+
+- name: restart the sshd
+  service: name=sshd state=restarted enabled=yes

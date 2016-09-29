@@ -1,0 +1,4 @@
+---
+ntp_servers:
+  - hz.ntp.x.netease.com
+  - ntp.x.netease.com

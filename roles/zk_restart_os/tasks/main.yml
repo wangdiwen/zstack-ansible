@@ -1,0 +1,26 @@
+---
+- name: restart server
+  shell: sleep 2 && /sbin/shutdown -r now "Ansible system package upgraded"
+  async: 1
+  poll: 0
+  ignore_errors: true
+
+- pause: seconds=30
+- name: waiting for server to come back
+  local_action: shell ping -c 1 -w 1 {{ ansible_host }}
+  # command: uptime
+  register: result
+  until: result.rc == 0
+  retries: 30
+  delay: 5
+
+- name: test server already reboot
+  command: uptime
+  register: result
+
+- name: quit this task
+  fail: msg="server reboot failed!"
+  when: result.rc != 0
+
+- name: restart ok
+  command: echo "restart {{ ansible_distribution }} ok"
