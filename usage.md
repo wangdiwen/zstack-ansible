@@ -16,9 +16,9 @@ zk_config_sshd.yml：配置安装服务器的sshd端口，允许root访问，设
 zk_deploy_single.yml: 自动部署zstack到安装服务器，可以自定义剧本中的vars下面的各个变量，zstack_开头的变量请不要改动.
 
 
-> $ ansible-playbook -vv playbooks/zk_config_sshd.yml -c paramiko --extra-vars 'host=zk-server ansible_port=<ssh-old-port>'
+> $ ansible-playbook -vv playbooks/zk_config_sshd.yml -c paramiko --extra-vars 'host=zk-server ansible_port=(ssh-old-port)'
 
-> $ ansible-playbook -vv playbooks/zk_deploy_single.yml -c paramiko  --extra-vars 'host=zk-server ansible_port=<ssh-port>'
+> $ ansible-playbook -vv playbooks/zk_deploy_single.yml -c paramiko  --extra-vars 'host=zk-server ansible_port=(ssh-port)'
 
 
 # 部署信息
