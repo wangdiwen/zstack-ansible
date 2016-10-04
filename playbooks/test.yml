@@ -1,0 +1,14 @@
+---
+  - name: test playbook
+    remote_user: "{{ ansible_user }}"
+    gather_facts: yes
+    hosts:
+      - "{{ host }}"
+    become: yes
+    become_user: root
+    become_method: sudo
+    vars:
+      ssh_root_pwd: "netease"
+
+    roles:
+      - test_role

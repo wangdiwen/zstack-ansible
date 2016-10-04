@@ -29,10 +29,10 @@
         - "192.168.130.31"
       # zstack example tinny image path is in roles/zk_start/files/zstack-image-1.4.qcow2
       # you can download it first and put it to the path before
-      trans_tinny_image: yes
+      trans_tinny_image: no
       # zstack example tinny image path is in roles/zk_start/files/zstack-virtualrouter-1.1.0.qcow2
       # you can download it first and put it to the path before
-      trans_vr_image: yes
+      trans_vr_image: no
 
       # below are zstack common variables,
       # you can defined them by yourself

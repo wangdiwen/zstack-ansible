@@ -1,0 +1,7 @@
+---
+
+- debug: msg="this is Debian task."
+
+- name: check os version
+  fail: msg="your system version is {{ ansible_distribution_major_version|int }}, cannot be supported !!"
+  when: ansible_distribution_major_version|int != 8

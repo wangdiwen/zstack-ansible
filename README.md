@@ -6,12 +6,12 @@ zstack-ansible provides a alternative solution except ZStack All-in-one bash scr
 
 # OS Support
 
-|OS|type|
-| --- |---|
-| Debian 8.x | support |
-| Ubuntu     | not yet |
-| CentOS     | not yet |
-| Fedora     | not yet |
+|OS| version|type|
+| --- |---| --- |
+| Debian | 8.x | support |
+| CentOS | ---    | not yet |
+| Ubuntu | ---    | not yet |
+| Fedora | ---    | not yet |
 
 > zstack-ansible just support Debian 8.x at present.
 

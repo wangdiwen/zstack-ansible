@@ -21,9 +21,7 @@
     vars:
       # set your server sshd port
       ssh_port: 22
-      # make password can use: mkpasswd --method=sha-512 --stdin <your password chars>
-      # below is 'netease'
-      ssh_root_pwd: '$6$gOHzRrk4E8zefram$.HfXx2FWKsgV1utqFnVPXE.4PaD/S1aqI3x2OJfJl2mt8iRFV.3BWVIj5PXGM6ZPNfFVVn0kFPBlqYUJnEyOf/'
+      ssh_root_pwd: 'netease'
 
     roles:
       - config_sshd

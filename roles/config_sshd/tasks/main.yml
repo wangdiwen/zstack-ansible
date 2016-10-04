@@ -1,5 +1,6 @@
 ---
 
+# modify the sshd configure
 - name: add root login of sshd
   lineinfile: dest=/etc/ssh/sshd_config state=present regexp='^PermitRootLogin' line='PermitRootLogin yes' backup=yes
 - name: open password auth
@@ -7,10 +8,19 @@
 - name: changed sshd port
   lineinfile: dest=/etc/ssh/sshd_config state=present regexp='^Port' line="Port {{ ssh_port }}" backup=yes
 
+- name: make root passwd
+  local_action: shell python -c 'import crypt; print crypt.crypt("{{ ssh_root_pwd }}", "$6$LVYzwshvca5o")'
+  register: result
+
+- name: fetch root passwd
+  debug: var=result.stdout
+
+- name: check root passwd
+  fail: msg="make root passwd failed !"
+  when: result.rc != 0
+
 - name: add root passwd
-  vars:
-    passwd: "{{ ssh_root_pwd }}"
-  user: name=root password={{ passwd }} state=present update_password=always
+  user: name=root password={{ result.stdout }} state=present update_password=always
 
 - name: restart the sshd
   service: name=sshd state=restarted enabled=yes

@@ -1,4 +1,5 @@
 ---
+
 - name: check os
   debug: msg="os={{ ansible_distribution }} major={{ ansible_distribution_major_version }}"
 

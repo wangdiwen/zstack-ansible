@@ -1,0 +1,132 @@
+---
+
+- debug: msg="this is Debian task."
+
+- name: check os version
+  fail: msg="your system version is {{ ansible_distribution_major_version|int }}, cannot be supported !!"
+  when: ansible_distribution_major_version|int != 8
+
+- name: set dns head
+  copy:
+    src=dns-head
+    dest=/etc/resolvconf/resolv.conf.d/head
+    owner=root
+    group=root
+    mode=644
+    backup=yes
+  when: ansible_distribution == 'Ubuntu'
+
+- name: update new dns
+  command: resolvconf -u
+  when: ansible_distribution == 'Ubuntu'
+
+- name: enable 163 sources
+  copy:
+    src=debian8-jessie-sources.list
+    dest=/etc/apt/sources.list
+    owner=root
+    group=root
+    mode=644
+    backup=yes
+  when: use_apt_sources_list
+
+- name: clean apt lock
+  file:
+    path={{ item }}
+    state=absent
+  with_items:
+    - /var/cache/apt/archives/lock
+    - /var/lib/dpkg/lock
+
+- name: update apt
+  apt:
+    update_cache=yes
+
+- name: install network bridge tool
+  apt: name=uml-utilities state=present
+
+- name: install locale
+  command: locale-gen en_US.UTF-8
+
+- name: set locale
+  locale_gen: name=en_US.UTF-8 state=present
+
+- name: configure default locale
+  copy:
+    src=locale-default
+    dest=/etc/default/locale
+    owner=root
+    group=root
+    mode=644
+    backup=yes
+
+- name: install some base libs
+  apt: name={{ item }} state=present
+  with_items:
+    - bridge-utils
+    - wget
+    - curl
+    - vlan
+    - gcc
+    - tar
+    - gzip
+    - sshpass
+    - ntp
+    - ntpdate
+    - bzip2
+    - bash-completion
+    - autoconf
+    - iptables
+    - build-essential
+    - libffi-dev
+    - libssl-dev
+    - zip
+    - unzip
+    - dnsmasq
+    - ebtables
+    - bison
+    - flex
+    - iptables-dev
+
+- name: install python modules
+  apt: name={{ item }} state=present
+  with_items:
+    - python-dev
+    - python-pip
+    - python-dev
+    - python-openssl
+    - python-virtualenv
+    - python-cffi
+    - python-cryptography
+    - python-libvirt
+
+- name: configure ntp
+  template:
+    src=ntp.conf.j2
+    dest=/etc/ntp.conf
+    owner=root
+    group=root
+    mode=644
+    backup=yes
+  when: use_ntp_servers
+  notify:
+    - restart ntp server
+
+- name: configure dns
+  template:
+    src=resolv.conf.j2
+    dest=/etc/resolv.conf
+    owner=root
+    group=root
+    mode=644
+    backup=yes
+  when: use_dns_servers
+
+- name: install iptables-persistent
+  apt: name=iptables-persistent state=present
+
+- name: enable netfilter-persistent
+  service: name=netfilter-persistent enabled=yes state=started
+
+- name: upgrade kernel
+  apt: name=linux-image-4.7.0-0.bpo.1-amd64-unsigned state=present default_release=jessie-backports update_cache=yes
