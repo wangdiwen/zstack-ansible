@@ -14,9 +14,3 @@
 
 - name: restart the sshd
   service: name=sshd state=restarted enabled=yes
-
-- name: install iptables-persistent
-  apt: name=iptables-persistent state=present
-
-- name: enable netfilter-persistent
-  service: name=netfilter-persistent enabled=yes state=started

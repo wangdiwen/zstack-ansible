@@ -115,6 +115,11 @@
     backup=yes
   when: use_dns_servers
 
+- name: install iptables-persistent
+  apt: name=iptables-persistent state=present
+
+- name: enable netfilter-persistent
+  service: name=netfilter-persistent enabled=yes state=started
 
 - name: upgrade kernel
   apt: name=linux-image-4.7.0-0.bpo.1-amd64-unsigned state=present default_release=jessie-backports update_cache=yes
