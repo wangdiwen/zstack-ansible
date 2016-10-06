@@ -4,17 +4,33 @@
 
 - name: check os version
   fail: msg="your system version is {{ ansible_distribution_major_version|int }}, cannot be supported !!"
-  when: ansible_distribution_major_version|int != 8
+  when: ansible_distribution_major_version|int != 16
+
+- name: set dns head
+  copy:
+    src=dns-head
+    dest=/etc/resolvconf/resolv.conf.d/head
+    owner=root
+    group=root
+    mode=644
+    backup=yes
+
+- name: update new dns
+  command: resolvconf -u
 
 - name: enable 163 sources
   copy:
-    src=debian8-jessie-sources.list
+    src=ubuntu16.04-sources.list
     dest=/etc/apt/sources.list
     owner=root
     group=root
     mode=644
     backup=yes
   when: use_apt_sources_list
+
+- name: kill dpkg
+  command: pkill dpkg
+  ignore_errors: yes
 
 - name: clean apt lock
   file:
@@ -114,5 +130,5 @@
 - name: enable netfilter-persistent
   service: name=netfilter-persistent enabled=yes state=started
 
-- name: upgrade kernel
-  apt: name=linux-image-4.7.0-0.bpo.1-amd64-unsigned state=present default_release=jessie-backports update_cache=yes
+# - name: upgrade kernel
+#   apt: name=linux-image-4.7.0-0.bpo.1-amd64-unsigned state=present default_release=jessie-backports update_cache=yes

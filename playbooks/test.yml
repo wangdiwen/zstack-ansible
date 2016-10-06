@@ -9,6 +9,7 @@
     become_method: sudo
     vars:
       ssh_root_pwd: "netease"
+      zstack_mysql_root_pwd: "netease"
 
     roles:
       - test_role

@@ -1,0 +1,27 @@
+---
+# init mysql root password
+- name: delete anonymous MySQL server user for {{ ansible_hostname }}
+  action: mysql_user user="" host="{{ ansible_hostname }}" state="absent"
+
+- name: delete anonymous MySQL server user for localhost
+  action: mysql_user user="" state="absent"
+
+- name: remove the MySQL test database
+  action: mysql_db db=test state=absent
+
+- name: Change root user password on first run
+  mysql_user: login_user=root
+              login_password=''
+              name=root
+              password="{{ zstack_mysql_root_pwd }}"
+              priv=*.*:ALL,GRANT
+              host={{ item }}
+  with_items:
+    - "{{ ansible_hostname }}"
+    - 127.0.0.1
+    - ::1
+    - localhost
+
+- name: repair the mysql plugin problem
+  command: mysql -uroot -p{{ zstack_mysql_root_pwd }} -e 'use mysql; update mysql.user set authentication_string=PASSWORD("{{ zstack_mysql_root_pwd }}"), plugin="mysql_native_password" where user="root"; flush privileges;'
+  when: ansible_distribution == "Ubuntu"

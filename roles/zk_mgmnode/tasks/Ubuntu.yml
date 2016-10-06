@@ -1,17 +1,17 @@
 ---
 
-- debug: msg="this is Debian task."
+- debug: msg="this is Ubuntu task."
 
 - name: check os version
   fail: msg="your system version is {{ ansible_distribution_major_version|int }}, cannot be supported !!"
-  when: ansible_distribution_major_version|int != 8
+  when: ansible_distribution_major_version|int != 16
 
 - name: install virtual software
   apt: name={{ item }} state=present
   with_items:
     - qemu-kvm
     - libvirt-bin
-    - libvirt-daemon
+    # - libvirt-daemon
     # - libvirtd
     - virtinst
 
@@ -37,11 +37,17 @@
 - name: create zstack basedir
   file: path={{ zstack_basedir }} state=directory mode=0755
 
+- name: remove old tomcat
+  file: path={{ item }} state=absent
+  with_items:
+    - "{{ zstack_basedir }}/apache-tomcat-7.0.35"
+    - "{{ zstack_tomcatdir }}"
+
 - name: install tomcat
   unarchive: src=apache-tomcat-7.0.35.tar.gz dest={{ zstack_basedir }}
 
 - name: rename tomcat dir
-  command: mv {{ zstack_basedir }}/apache-tomcat-7.0.35 {{ zstack_tomcatdir }}
+  shell: cp -ar {{ zstack_basedir }}/apache-tomcat-7.0.35 {{ zstack_tomcatdir }} && rm -rf {{ zstack_basedir }}/apache-tomcat-7.0.35
 
 - name: create zstack wardir
   file: path={{ zstack_wardir }} state=directory mode=0755
@@ -199,7 +205,8 @@
     backup=yes
 
 - name: deploy database
-  command: "zstack-ctl deploydb --host={{ zstack_mysql_host }} --root-password={{ zstack_mysql_root_pwd }} --zstack-password={{ zstack_mysql_zstack_pwd }} >> /tmp/install.log 2>&1"
+  command: "zstack-ctl deploydb --host={{ zstack_mysql_host }} --root-password={{ zstack_mysql_root_pwd }} --zstack-password={{ zstack_mysql_zstack_pwd }} --drop >> /tmp/install.log 2>&1"
+  # become: yes
 
 - name: config zstack properties for rabbitmq
   command: "{{ item }}"
@@ -207,9 +214,9 @@
     - "zstack-ctl configure  CloudBus.rabbitmqUsername={{ zstack_rabbitmq_user }}"
     - "zstack-ctl configure  CloudBus.rabbitmqPassword={{ zstack_rabbitmq_pwd }}"
 
-
-- name: restart the libvirtd
-  service: name=libvirtd state=restarted enabled=yes
+# in Ubuntu, the libvirtd is libvirt-bin
+- name: restart the libvirt-bin
+  service: name=libvirt-bin state=restarted enabled=yes
 
 - name: management node installed
   debug: msg="zstack management node installed successfully"
