@@ -1,17 +1,10 @@
 ---
 
-- debug: msg="this is Debian task."
+- debug: msg="this is Ubuntu task."
 
 - name: check os version
   fail: msg="your system version is {{ ansible_distribution_major_version|int }}, cannot be supported !!"
-  when: ansible_distribution_major_version|int != 8
-
-- name: start the zstack management node
-  # if the dashboard installed on same server,
-  # you can also use below cmd to start zstack node and ui:
-  # /etc/init.d/zstack-server start
-  # zstack-ctl start
-  service: name=zstack state=restarted enabled=yes
+  when: ansible_distribution_major_version|int != 16
 
 # ----------
 # Below for repair some bugs
@@ -27,13 +20,13 @@
     replace='to_bytes'
     mode=644
     backup=yes
-  when: ansible_distribution == 'Debian'
+  when: ansible_distribution == 'Ubuntu'
 
 - name: repair python ansible bug to del pyc file
   file: name=/usr/local/lib/python2.7/dist-packages/ansible/errors/__init__.pyc state=absent
-  when: ansible_distribution == 'Debian'
+  when: ansible_distribution == 'Ubuntu'
 
-# In Debian 8, repair smome zstack bugs
+# In Ubuntu 8, repair smome zstack bugs
 - name: repair zstack kvm code
   copy:
     src=kvm.py
@@ -82,8 +75,8 @@
 - name: create the backup storage
   file: path={{ zstack_backup_dir }} state=directory owner={{ zstack_user }} group={{ zstack_user }} mode=0777 recurse=yes
 
-- name: upgrade iproute2 to 4.6
-  apt: deb=http://ftp.hk.debian.org/debian/pool/main/i/iproute2/iproute2_4.6.0-4_amd64.deb
+# - name: upgrade iproute2 to 4.6
+#   apt: deb=http://ftp.hk.debian.org/debian/pool/main/i/iproute2/iproute2_4.6.0-4_amd64.deb
 
 - name: copy zstack tinny image to http server
   copy:

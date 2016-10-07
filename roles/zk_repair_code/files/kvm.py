@@ -329,7 +329,7 @@ if chroot_env == 'false':
     # name: restart kvmagent, do not use ansible systemctl due to kvmagent can start by itself, so systemctl will not know
     # the kvm agent status when we want to restart it to use the latest kvm agent code
     if distro == "RedHat" or distro == "CentOS":
-        command = "service zstack-kvmagent stop && service zstack-kvmagent start && chkconfig zstack-kvmagent on"
+        command = "systemctl stop zstack-kvmagent.service && systemctl start zstack-kvmagent.service"  # by diwen
     elif distro == "Debian" or distro == "Ubuntu":
         command = "systemctl stop zstack-kvmagent.service && systemctl start zstack-kvmagent.service"  #  by diwen
     host_post_info.post_label = "ansible.shell.restart.service"

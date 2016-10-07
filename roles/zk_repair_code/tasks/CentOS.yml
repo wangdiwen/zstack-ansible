@@ -1,17 +1,10 @@
 ---
 
-- debug: msg="this is Ubuntu task."
+- debug: msg="this is CentOS task."
 
 - name: check os version
   fail: msg="your system version is {{ ansible_distribution_major_version|int }}, cannot be supported !!"
-  when: ansible_distribution_major_version|int != 16
-
-- name: start the zstack management node
-  # if the dashboard installed on same server,
-  # you can also use below cmd to start zstack node and ui:
-  # /etc/init.d/zstack-server start
-  # zstack-ctl start
-  service: name=zstack state=restarted enabled=yes
+  when: ansible_distribution_major_version|int != 7
 
 # ----------
 # Below for repair some bugs
@@ -20,18 +13,18 @@
 # donnot has 'to_str' func in /usr/local/lib/python2.7/dist-packages/ansible/utils/unicode.py,
 # but /usr/local/lib/python2.7/dist-packages/ansible/errors/__init__.py also uses the 'to_str' func,
 # we must change 'to_str' to 'to_bytes' !!!
-- name: repair python ansible module bug
-  replace:
-    dest=/usr/local/lib/python2.7/dist-packages/ansible/errors/__init__.py
-    regexp='to_str'
-    replace='to_bytes'
-    mode=644
-    backup=yes
-  when: ansible_distribution == 'Ubuntu'
-
-- name: repair python ansible bug to del pyc file
-  file: name=/usr/local/lib/python2.7/dist-packages/ansible/errors/__init__.pyc state=absent
-  when: ansible_distribution == 'Ubuntu'
+# - name: repair python ansible module bug
+#   replace:
+#     dest=/usr/local/lib/python2.7/dist-packages/ansible/errors/__init__.py
+#     regexp='to_str'
+#     replace='to_bytes'
+#     mode=644
+#     backup=yes
+#   when: ansible_distribution == 'Ubuntu'
+#
+# - name: repair python ansible bug to del pyc file
+#   file: name=/usr/local/lib/python2.7/dist-packages/ansible/errors/__init__.pyc state=absent
+#   when: ansible_distribution == 'Ubuntu'
 
 # In Ubuntu 8, repair smome zstack bugs
 - name: repair zstack kvm code

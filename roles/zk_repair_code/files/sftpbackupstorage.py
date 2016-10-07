@@ -146,7 +146,7 @@ if sftp_copy_result != "changed:False":
 if chroot_env == 'false':
     if distro == "RedHat" or distro == "CentOS":
         # some users meet restart can't work on their system
-        command = "service zstack-sftpbackupstorage stop && service zstack-sftpbackupstorage start && chkconfig zstack-sftpbackupstorage on"
+        command = "systemctl stop zstack-sftpbackupstorage && systemctl start zstack-sftpbackupstorage"  #  by diwen
     elif distro == "Debian" or distro == "Ubuntu":
         command = "systemctl stop zstack-sftpbackupstorage && systemctl start zstack-sftpbackupstorage"  #  by diwen
     run_remote_command(command, host_post_info)
