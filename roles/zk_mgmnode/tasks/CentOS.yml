@@ -4,35 +4,29 @@
 
 - name: check os version
   fail: msg="your system version is {{ ansible_distribution_major_version|int }}, cannot be supported !!"
-  when: ansible_distribution_major_version|int != 8
+  when: ansible_distribution_major_version|int != 7
 
 - name: install virtual software
-  apt: name={{ item }} state=present
+  yum: name={{ item }} state=present
   with_items:
     - qemu-kvm
-    - libvirt-bin
+    - libvirt-python
+    - libvirt
+    - libvirt-client
     - libvirt-daemon
-    # - libvirtd
-    - virtinst
-
-# - name: upgrade the python cffi
-#   command: pip install cffi --upgrade
-#
-# - name: upgrade the python cryptography
-#   command: pip install cryptography --upgrade
 
 - name: install ansible
   pip: name=ansible state=forcereinstall
 
 # --------- continue -----------
 - name: install java-8
-  apt: name=openjdk-8-jdk state=present
+  yum: name=java-1.8.0-openjdk state=present
 
 - name: set java-8 as default jre
   command: "{{ item }}"
   with_items:
-    - "/usr/bin/update-alternatives --install /usr/bin/java java /usr/lib/jvm/java-1.8.0-openjdk-amd64/bin/java 0"
-    - "/usr/bin/update-alternatives --set java /usr/lib/jvm/java-1.8.0-openjdk-amd64/bin/java"
+    - "/usr/sbin/update-alternatives --install /usr/bin/java java /usr/lib/jvm/jre-1.8.0/bin/java 0"
+    - "/usr/sbin/update-alternatives --set java /usr/lib/jvm/jre-1.8.0/bin/java"
 
 - name: create zstack basedir
   file: path={{ zstack_basedir }} state=directory mode=0755
@@ -74,7 +68,7 @@
 #   user: name={{ zstack_user }} state=absent remove=yes
 
 - name: create zstack user
-  user: name={{ zstack_user }} shell=/bin/bash home={{ zstack_basedir }} groups=sudo append=yes
+  user: name={{ zstack_user }} shell=/bin/bash home={{ zstack_basedir }} group=wheel append=yes
 
 - name: change zstack user home mode
   file: path={{ zstack_basedir }} owner={{ zstack_user }} group={{ zstack_user }} state=directory recurse=yes
@@ -89,10 +83,13 @@
   command: "zstack-ctl install_license --license {{ zstack_tomcatdir }}/LICENSE >> /tmp/install.log 2>&1"
 
 - name: enable root user nopasswd
-  lineinfile: dest=/etc/sudoers state=present regexp='^root' line='root ALL=(ALL:ALL) NOPASSWD:ALL' validate='visudo -cf %s' backup=yes
+  lineinfile: dest=/etc/sudoers state=present regexp='^root' line='root ALL=(ALL : ALL) NOPASSWD: ALL' validate='visudo -cf %s' backup=yes
 
 - name: add zstack user to nopasswd
-  lineinfile: dest=/etc/sudoers state=present insertafter=EOF line='zstack ALL=(ALL:ALL) NOPASSWD:ALL' validate='visudo -cf %s' backup=yes
+  lineinfile: dest=/etc/sudoers state=present insertafter=EOF line='zstack ALL=(ALL : ALL) NOPASSWD: ALL' validate='visudo -cf %s' backup=yes
+
+- name: disable the requiretty
+  lineinfile: dest=/etc/sudoers state=present regexp='^Defaults    requiretty' line='#Defaults    requiretty' validate='visudo -cf %s' backup=yes
 
 - name: check zstack status
   command: zstack-ctl status
@@ -210,6 +207,9 @@
 
 - name: restart the libvirtd
   service: name=libvirtd state=restarted enabled=yes
+
+- name: stop the firewall
+  service: name=firewalld enabled=no state=stopped
 
 - name: start the zstack management node
   # if the dashboard installed on same server,

@@ -1,9 +1,11 @@
 # 使用说明
 
-- 你的操作系统需要是Linux/Unix
+- 确保你在Linux/Unix下面工作.
 - zstack-ansible通过命令行执行，所以需要你的操作系统已经安装了ansible工具
 > ansible install
 > sudo pip install ansible
+
+- 在你的物理服务器上，增加一个用户，并且可以执行无密码sudo指令.
 
 - 设置你的服务器地址
 > 修改ansible.cfg
@@ -11,7 +13,7 @@
 - 执行剧本
 在playbooks下面有2个剧本
 
-zk_config_sshd.yml：配置安装服务器的sshd端口，允许root访问，设置自定义root密码可以修改ssh_root_pwd变量，根据剧本注释进行操作. 如果你的安装服务器之前没有开启root密码和远程登陆，可以执行该剧本!
+zk_config_sshd.yml：配置安装服务器的sshd端口，允许root访问，设置自定义root密码可以修改ssh_root_pwd变量，根据剧本注释进行操作. 如果你的安装服务器之前没有开启root密码和远程登陆，可以执行该剧本! 否则，不执行改剧本！
 
 zk_deploy_single.yml: 自动部署zstack到安装服务器，可以自定义剧本中的vars下面的各个变量，zstack_开头的变量请不要改动.
 

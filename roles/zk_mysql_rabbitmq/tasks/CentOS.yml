@@ -1,0 +1,63 @@
+---
+
+- debug: msg="this is CentOS task."
+
+- name: check os version
+  fail: msg="your system version is {{ ansible_distribution_major_version|int }}, cannot be supported !!"
+  when: ansible_distribution_major_version|int != 7
+
+# mysql and rabbitmq server can deploy to other host
+- name: install mysql
+  yum: name={{ item }} state=present
+  with_items:
+    - mariadb-server
+    - mariadb
+
+- name: install rabbitmq
+  yum: name=rabbitmq-server state=present
+
+- name: enable mysql and rabbitmq
+  service: name={{ item }} enabled=yes state=started
+  with_items:
+    - mariadb
+    - rabbitmq-server
+
+- name: install python mysqldb
+  yum: name=MySQL-python state=present
+
+- name: set mysql root password
+  mysql_user:
+    name=root
+    host={{ zstack_mysql_host }}
+    password={{ zstack_mysql_root_pwd }}
+    check_implicit_admin=yes
+    login_user=root
+    login_password=""
+    state=present
+
+- name: set mysql zstack user password
+  mysql_user:
+    name={{ zstack_user }}
+    host={{ zstack_mysql_host }}
+    password={{ zstack_mysql_zstack_pwd }}
+    check_implicit_admin=yes
+    login_user=root
+    login_password={{ zstack_mysql_root_pwd }}
+    state=present
+
+- name: install rabbitmq-plugins
+  command: rabbitmq-plugins enable rabbitmq_management
+
+- name: restart rabbitmq
+  service: name=rabbitmq-server state=restarted
+
+- name: deploy rabbitmq
+  rabbitmq_user:
+    user={{ zstack_rabbitmq_user }}
+    password={{ zstack_rabbitmq_pwd }}
+    vhost={{ zstack_rabbitmq_priv_vhost }}
+    configure_priv={{ zstack_rabbitmq_config_priv }}
+    read_priv={{ zstack_rabbitmq_read_priv }}
+    write_priv={{ zstack_rabbitmq_write_priv }}
+    tags={{ zstack_rabbitmq_tags }}
+    state=present

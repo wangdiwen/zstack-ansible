@@ -4,3 +4,4 @@
 
 # your servers
 zk-server ansible_host=192.168.124.194 ansible_port=22 ansible_user=diwen
+zk-172 ansible_host=192.168.124.172 ansible_port=22 ansible_user=diwen

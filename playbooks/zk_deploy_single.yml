@@ -65,4 +65,4 @@
       - zk_mysql_rabbitmq
       - zk_mgmnode
       - zk_http_nfs
-      - zk_start
+      - zk_repair_code

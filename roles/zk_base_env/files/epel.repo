@@ -1,0 +1,5 @@
+[epel]
+name=Extra Packages for Enterprise Linux 7 - $basearch
+mirrorlist=https://mirrors.fedoraproject.org/metalink?repo=epel-7&arch=$basearch
+enabled=1
+gpgcheck=0

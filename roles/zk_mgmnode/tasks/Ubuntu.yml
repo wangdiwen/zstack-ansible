@@ -218,5 +218,12 @@
 - name: restart the libvirt-bin
   service: name=libvirt-bin state=restarted enabled=yes
 
+- name: start the zstack management node
+  # if the dashboard installed on same server,
+  # you can also use below cmd to start zstack node and ui:
+  # /etc/init.d/zstack-server start
+  # zstack-ctl start
+  service: name=zstack state=restarted enabled=yes
+
 - name: management node installed
   debug: msg="zstack management node installed successfully"
