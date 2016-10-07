@@ -83,10 +83,10 @@
   command: "zstack-ctl install_license --license {{ zstack_tomcatdir }}/LICENSE >> /tmp/install.log 2>&1"
 
 - name: enable root user nopasswd
-  lineinfile: dest=/etc/sudoers state=present regexp='^root' line='root ALL=(ALL : ALL) NOPASSWD: ALL' validate='visudo -cf %s' backup=yes
+  lineinfile: dest=/etc/sudoers state=present regexp='^root' line='root ALL=(ALL:ALL) NOPASSWD:ALL' validate='visudo -cf %s' backup=yes
 
 - name: add zstack user to nopasswd
-  lineinfile: dest=/etc/sudoers state=present insertafter=EOF line='zstack ALL=(ALL : ALL) NOPASSWD: ALL' validate='visudo -cf %s' backup=yes
+  lineinfile: dest=/etc/sudoers state=present insertafter=EOF line='zstack ALL=(ALL:ALL) NOPASSWD:ALL' validate='visudo -cf %s' backup=yes
 
 - name: disable the requiretty
   lineinfile: dest=/etc/sudoers state=present regexp='^Defaults    requiretty' line='#Defaults    requiretty' validate='visudo -cf %s' backup=yes
