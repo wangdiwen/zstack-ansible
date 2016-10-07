@@ -19,8 +19,6 @@ zstack-ansible provides a alternative solution except ZStack All-in-one bash scr
 参考项目文件 usage.md
 
 # Welcome contribution
-> 由于ZStack官方的安装部署脚本已经完美支持Centos 7.2+，而对于其他常用的开源系统，比如Debian，并没有太多支持，zstack-ansible项目将会先从我本人所用的Debian系统进行ZStack的整合和移植工作. 其他操作系统诸如 Centos/Fedora/Ubuntu 将会陆续进行开放出来.
-
 > 如果你对zstack-ansible感兴趣，欢迎提交PR，也可以与我联系，共同成长！
 
 # Why zstack-ansible
