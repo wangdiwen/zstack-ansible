@@ -106,7 +106,6 @@
     - "zstack_http_dir: {{ zstack_http_dir }}"
     - "zstack_nfs_dir: {{ zstack_nfs_dir }}"
     - "zstack_backup_dir: {{ zstack_backup_dir }}"
-    - "test: {{ zstack_user }}"
 
 # ------
 # game end

@@ -34,8 +34,14 @@
     - "/usr/bin/update-alternatives --install /usr/bin/java java /usr/lib/jvm/java-1.8.0-openjdk-amd64/bin/java 0"
     - "/usr/bin/update-alternatives --set java /usr/lib/jvm/java-1.8.0-openjdk-amd64/bin/java"
 
-- name: create zstack basedir
-  file: path={{ zstack_basedir }} state=directory mode=0755
+# - name: create zstack basedir
+#   file: path={{ zstack_basedir }} state=directory mode=0755
+
+# - name: del zstack user
+#   user: name={{ zstack_user }} state=absent remove=yes
+
+- name: create zstack user
+  user: name={{ zstack_user }} shell=/bin/bash home={{ zstack_basedir }} groups=sudo append=yes
 
 - name: install tomcat
   unarchive: src=apache-tomcat-7.0.35.tar.gz dest={{ zstack_basedir }}
@@ -69,12 +75,6 @@
   args:
     executable: /bin/bash
   become: yes
-
-# - name: del zstack user
-#   user: name={{ zstack_user }} state=absent remove=yes
-
-- name: create zstack user
-  user: name={{ zstack_user }} shell=/bin/bash home={{ zstack_basedir }} groups=sudo append=yes
 
 - name: change zstack user home mode
   file: path={{ zstack_basedir }} owner={{ zstack_user }} group={{ zstack_user }} state=directory recurse=yes

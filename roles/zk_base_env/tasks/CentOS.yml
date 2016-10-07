@@ -123,3 +123,6 @@
 
 # - name: enable netfilter-persistent
 #   service: name=netfilter-persistent enabled=yes state=started
+
+- name: disable selinux
+  lineinfile: dest=/etc/selinux/config state=present regexp='^SELINUX=enforcing' line='SELINUX=disabled' backup=yes

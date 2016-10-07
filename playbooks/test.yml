@@ -27,7 +27,8 @@
       # zstack example tinny image path is in roles/zk_start/files/zstack-virtualrouter-1.1.0.qcow2
       # you can download it first and put it to the path before
       trans_vr_image: no
-
+      zstack_user: zstack
+      zstack_basedir: /usr/local/zstack
 
     roles:
       - test_role

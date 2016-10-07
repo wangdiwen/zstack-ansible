@@ -10,7 +10,7 @@ zstack-ansible provides a alternative solution except ZStack All-in-one bash scr
 | --- |---| --- |
 | Debian | 8.x | support |
 | Ubuntu | 16.04    | support |
-| CentOS | 7.2  | support |
+| CentOS | 7.x  | support |
 
 # Zstack version
 #### zstack-ansible based on zstack 1.6.2 version.

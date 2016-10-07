@@ -60,9 +60,9 @@
       zstack_rabbitmq_write_priv: ".*"
 
     roles:
-      - zk_base_env
-      - zk_restart_os
-      - zk_mysql_rabbitmq
+      # - zk_base_env
+      # - zk_restart_os
+      # - zk_mysql_rabbitmq
       - zk_mgmnode
       - zk_http_nfs
       - zk_repair_code
