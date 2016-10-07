@@ -2,13 +2,13 @@
 
 - 确保你在Linux/Unix下面工作.
 - zstack-ansible通过命令行执行，所以需要你的操作系统已经安装了ansible工具
-> ansible install
 > sudo pip install ansible
 
 - 在你的物理服务器上，增加一个用户，并且可以执行无密码sudo指令.
 
 - 设置你的服务器地址
 > 修改ansible.cfg
+
 
 - 执行剧本
 在playbooks下面有2个剧本
