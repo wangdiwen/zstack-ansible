@@ -18,10 +18,6 @@
     become: yes
     become_user: root
     become_method: sudo
-    vars:
-      # set your server sshd port
-      ssh_port: 22
-      ssh_root_pwd: 'netease'
 
     roles:
       - config_sshd

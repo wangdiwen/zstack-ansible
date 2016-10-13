@@ -1,0 +1,6 @@
+---
+# if you want to use defined ntp server addrs, change it to 'yes'
+use_ntp_servers: yes
+ntp_servers:
+  - hz.ntp.x.netease.com
+  - ntp.x.netease.com

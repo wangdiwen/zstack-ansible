@@ -15,49 +15,6 @@
     become: yes
     become_user: root
     become_method: sudo
-    vars:
-      # if you want to use defined apt sources, change it to 'no'
-      use_apt_sources_list: yes
-      ntp_servers:
-        - hz.ntp.x.netease.com
-        - ntp.x.netease.com
-      # if you want to use defined ntp server addrs, change it to 'yes'
-      use_ntp_servers: yes
-      use_dns_servers: yes
-      dns_servers:
-        - "192.168.130.33"
-        - "192.168.130.31"
-      # zstack example tinny image path is in roles/zk_start/files/zstack-image-1.4.qcow2
-      # you can download it first and put it to the path before
-      trans_tinny_image: no
-      # zstack example tinny image path is in roles/zk_start/files/zstack-virtualrouter-1.1.0.qcow2
-      # you can download it first and put it to the path before
-      trans_vr_image: no
-
-      # below are zstack common variables,
-      # you can defined them by yourself
-      zstack_backup_dir: /backup_root
-      zstack_http_user: www-data
-      zstack_http_dir: /var/www/html/http_root
-      zstack_nfs_user: zstack
-      zstack_nfs_dir: /var/www/html/nfs_root
-      zstack_basedir: /usr/local/zstack
-      zstack_tomcatdir: "{{ zstack_basedir }}/apache-tomcat"
-      zstack_wardir: "{{ zstack_tomcatdir }}/webapps/zstack"
-      zstack_install_sh_script: "{{ zstack_wardir }}/WEB-INF/classes/tools/install.sh"
-      zstack_user: zstack
-      zstack_licensedir: /var/lib/zstack
-      zstack_mysql_host: localhost
-      zstack_mysql_root_pwd: netease
-      zstack_mysql_zstack_pwd: netease
-      zstack_rabbitmq_host: localhost
-      zstack_rabbitmq_user: zstack
-      zstack_rabbitmq_pwd: netease
-      zstack_rabbitmq_tags: administrator
-      zstack_rabbitmq_priv_vhost: "/"
-      zstack_rabbitmq_config_priv: ".*"
-      zstack_rabbitmq_read_priv: ".*"
-      zstack_rabbitmq_write_priv: ".*"
 
     roles:
       # - zk_base_env

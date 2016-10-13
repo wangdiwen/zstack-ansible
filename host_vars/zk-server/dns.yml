@@ -1,0 +1,5 @@
+---
+use_dns_servers: yes
+dns_servers:
+  - "192.168.130.33"
+  - "192.168.130.31"
